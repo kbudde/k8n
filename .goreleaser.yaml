@@ -126,21 +126,6 @@ dockers:
   - "--label=org.opencontainers.image.version={{.Version}}"
   - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
   - "--platform=linux/arm64"
-- 
-  goos: windows
-  goarch: amd64
-  image_templates:
-  - "kbudde/{{.ProjectName}}:windows-amd64-{{.Version}}"
-  - "ghcr.io/kbudde/{{.ProjectName}}:windows-amd64-{{.Version}}"
-  use: buildx
-  dockerfile: Dockerfile.windows
-  build_flag_templates:
-  - "--label=org.opencontainers.image.created={{.Date}}"
-  - "--label=org.opencontainers.image.title={{.ProjectName}}"
-  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-  - "--label=org.opencontainers.image.version={{.Version}}"
-  - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
-  - "--platform=windows/amd64"
 
 docker_manifests:
 - # github
@@ -150,7 +135,6 @@ docker_manifests:
   - ghcr.io/kbudde/{{.ProjectName}}:linux-arm6-{{.Version}}
   - ghcr.io/kbudde/{{.ProjectName}}:linux-arm7-{{.Version}}
   - ghcr.io/kbudde/{{.ProjectName}}:linux-arm64-{{.Version}}
-  - ghcr.io/kbudde/{{.ProjectName}}:windows-amd64-{{.Version}}
 -
   name_template: ghcr.io/kbudde/{{.ProjectName}}:{{.Version}}
   image_templates: *github_images
@@ -164,7 +148,6 @@ docker_manifests:
   - kbudde/{{.ProjectName}}:linux-arm6-{{.Version}}
   - kbudde/{{.ProjectName}}:linux-arm7-{{.Version}}
   - kbudde/{{.ProjectName}}:linux-arm64-{{.Version}}
-  - kbudde/{{.ProjectName}}:windows-amd64-{{.Version}}
 -
   name_template: kbudde/{{.ProjectName}}:{{.Version}}
   image_templates: *docker_images
