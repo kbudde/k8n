@@ -1,0 +1,21 @@
+#! This is the secret operator config
+apiVersion: k8n.budd.ee/v1beta
+kind: config
+metadata:
+  name: secret-operator
+#! k8n will watch all resources listed in watchers
+watcher:
+#! watch for secrets in namespace prod-secrets with label k8n.budd.ee/secret-operator enabled
+#! and copy them to namespaces with label env=prod
+- name: prodSecrets
+  apiVersion: v1
+  kind: secrets
+  selector: "k8n.budd.ee/secret-operator in (enabled, true)"
+  namespace: prod-secrets
+
+#! Secrets will be copied to namespaces defined in this watcher
+- name: namespacesProd
+  apiVersion: v1
+  kind: namespaces
+  selector: "env=prod"
+  namespace: ""

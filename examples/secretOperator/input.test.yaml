@@ -1,0 +1,34 @@
+#! watcher prodSecrets: List of secrets in template namespace
+prodSecrets:
+- apiVersion: v1
+  data:
+    user: YWRtaW4=
+    password: c2VjdXJlSXNSZWNvbW1lbmRlZCE7KQ==
+  immutable: true
+  kind: Secret
+  metadata:
+    creationTimestamp: "2022-12-13T19:12:13Z"
+    name: some-secret
+    namespace: prod-secrets
+    resourceVersion: "1"
+    labels:
+      k8n.budd.ee/secret-operator: enabled
+    uid: 5bfd856d-5be9-49c8-9e8e-48e69348187c
+  type: Opaque
+
+#! watcher namespacesProd: List of namespaces to copy secrets to
+namespacesProd:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    labels:
+      kubernetes.io/metadata.name: random
+      env: prod
+    name: random
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    labels:
+      kubernetes.io/metadata.name: user-foo
+      env: prod
+    name: user-foo

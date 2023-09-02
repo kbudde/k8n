@@ -1,0 +1,25 @@
+linters:
+  presets:
+  - bugs
+  - comment
+  - complexity
+  - error
+  - format
+  - import
+  - metalinter
+  - module
+  - performance
+  - style
+  - test
+
+  disable:
+    - gochecknoinits
+    - predeclared
+    - wrapcheck # TODO: reactivate
+    - goerr113
+    - depguard
+    - varnamelen
+    - nolintlint
+    - exhaustruct
+    - ireturn
+    - forbidigo

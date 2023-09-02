@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+immutable: true
+metadata:
+  name: some-secret
+  namespace: random
+  labels:
+    k8n.budd.ee/managed: "true"
+    k8n.budd.ee/managed-by: k8n-secret-operator
+    env: prod
+data:
+  user: YWRtaW4=
+  password: c2VjdXJlSXNSZWNvbW1lbmRlZCE7KQ==
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+immutable: true
+metadata:
+  name: some-secret
+  namespace: user-foo
+  labels:
+    k8n.budd.ee/managed: "true"
+    k8n.budd.ee/managed-by: k8n-secret-operator
+    env: prod
+data:
+  user: YWRtaW4=
+  password: c2VjdXJlSXNSZWNvbW1lbmRlZCE7KQ==
+
