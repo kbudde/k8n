@@ -133,6 +133,7 @@ dockers:
   - "kbudde/{{.ProjectName}}:windows-amd64-{{.Version}}"
   - "ghcr.io/kbudde/{{.ProjectName}}:windows-amd64-{{.Version}}"
   use: buildx
+  dockerfile: Dockerfile.windows
   build_flag_templates:
   - "--label=org.opencontainers.image.created={{.Date}}"
   - "--label=org.opencontainers.image.title={{.ProjectName}}"
