@@ -1,4 +1,4 @@
-FROM alpine:latest AS build
+FROM alpine:latest@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a AS build
 RUN apk add --no-cache tini-static
 
 FROM scratch
