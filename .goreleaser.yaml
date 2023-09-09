@@ -8,7 +8,7 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
-    tags: 
+    tags:
       - netgo
       - static_build
     targets:
@@ -19,7 +19,7 @@ builds:
       - darwin_amd64
       - linux_arm_6
       - linux_arm_7
-    ldflags: 
+    ldflags:
       -  -X main.Version={{.Version}}
       -  -X main.Revision={{.ShortCommit}}
       -  -X main.BuildDate={{.CommitDate}}
@@ -50,9 +50,12 @@ changelog:
   - title: Features
     regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
     order: 0
-  - title: "Bug fixes"
-    regexp: '^.*?bug(\([[:word:]]+\))??!?:.+$'
+  - title: "Fixes"
+    regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
     order: 1
+  - title: Dependencies
+    regexp: '^.*?chore\(deps\)??!?:.+$'
+    order: 998
   - title: Others
     order: 999
 
@@ -68,7 +71,7 @@ release:
     - `docker pull kbudde/{{.ProjectName}}:{{.Major}}`
 
 dockers:
-- 
+-
   goos: linux
   goarch: amd64
   image_templates:
@@ -82,7 +85,7 @@ dockers:
   - "--label=org.opencontainers.image.version={{.Version}}"
   - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
   - "--platform=linux/amd64"
-- 
+-
   goos: linux
   goarch: arm
   goarm: "6"
@@ -97,7 +100,7 @@ dockers:
   - "--label=org.opencontainers.image.version={{.Version}}"
   - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
   - "--platform=linux/arm/v6"
-- 
+-
   goos: linux
   goarch: arm
   goarm: "7"
@@ -112,7 +115,7 @@ dockers:
   - "--label=org.opencontainers.image.version={{.Version}}"
   - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
   - "--platform=linux/arm/v7"
-- 
+-
   goos: linux
   goarch: arm64
   image_templates:
