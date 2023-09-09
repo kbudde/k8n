@@ -11,7 +11,7 @@ import (
 	"github.com/kbudde/k8n/internal/config"
 	"github.com/kbudde/k8n/internal/controller"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // readCmd represents the read command.

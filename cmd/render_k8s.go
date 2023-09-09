@@ -13,7 +13,7 @@ import (
 	"github.com/kbudde/k8n/internal/controller"
 	"github.com/kbudde/k8n/internal/ytt"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // k8sCmd represents the k8s command
