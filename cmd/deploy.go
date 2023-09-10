@@ -8,6 +8,7 @@ import (
 
 	"github.com/kbudde/k8n/internal/kapp"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // deployCmd represents the deploy command.
@@ -23,8 +24,8 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		folder, err := cmd.Flags().GetString("folder")
-		cobra.CheckErr(err)
+		folder := viper.GetString("folder")
+
 		k8s, err := kubeConfigFromFlags()
 		cobra.CheckErr(err)
 
@@ -39,4 +40,7 @@ func init() {
 	rootCmd.AddCommand(deployCmd)
 	// folder flag
 	deployCmd.Flags().StringP("folder", "f", "", "folder where the kubernetes manifests are located")
+
+	err := viper.BindPFlags(deployCmd.Flags())
+	cobra.CheckErr(err)
 }

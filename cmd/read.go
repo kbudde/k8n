@@ -11,6 +11,7 @@ import (
 	"github.com/kbudde/k8n/internal/config"
 	"github.com/kbudde/k8n/internal/controller"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 )
 
@@ -28,10 +29,9 @@ var readCmd = &cobra.Command{
 
 		restConfig, err := kubeConfigFromFlags()
 		cobra.CheckErr(err)
-		cfgFile, err := cmd.Flags().GetString("config")
-		cobra.CheckErr(err)
-		output, err := cmd.Flags().GetString("output")
-		cobra.CheckErr(err)
+
+		cfgFile := viper.GetString("config")
+		output := viper.GetString("output")
 		cfg, err := config.FromYamlFile(cfgFile)
 		cobra.CheckErr(err)
 		data, err := controller.Read(restConfig, *cfg)
@@ -58,4 +58,7 @@ func init() {
 	readCmd.Aliases = []string{"r"}
 	readCmd.Flags().String("config", "config.yaml", "path to the configuration file")
 	readCmd.Flags().String("output", "-", "output the file for data of the cluster, default is stdout")
+
+	err := viper.BindPFlags(readCmd.Flags())
+	cobra.CheckErr(err)
 }

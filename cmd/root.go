@@ -35,12 +35,6 @@ import (
 	"k8s.io/klog/v2"
 )
 
-//nolint:gochecknoglobals
-var (
-	cfgFile        string
-	kubeconfigPath string
-)
-
 // rootCmd represents the base command when called without any subcommands.
 //
 //nolint:exhaustruct,gochecknoglobals
@@ -78,21 +72,31 @@ func init() {
 	rootCmd.PersistentFlags().AddGoFlagSet(fs)
 
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(
-		&kubeconfigPath,
-		"kubeconfig",
-		os.Getenv("KUBECONFIG"),
-		"defaults to $KUBECONFIG if not in cluster")
+	rootCmd.PersistentFlags().String("kubeconfig", os.Getenv("KUBECONFIG"), "defaults to $KUBECONFIG if not in cluster")
+
+	err := viper.BindPFlags(rootCmd.PersistentFlags())
+	cobra.CheckErr(err)
+
+	err = viper.BindPFlags(rootCmd.Flags())
+	cobra.CheckErr(err)
+
 }
 
 func kubeConfigFromFlags() (*rest.Config, error) {
+	kubeconfigPath := viper.GetString("kubeconfig")
+
 	cfg, err := rest.InClusterConfig()
 	if err == nil {
 		return cfg, nil
 	}
 
 	// If not running in-cluster, use the default kubeconfig file
-	return clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+	cfg, err = clientcmd.BuildConfigFromFlags("", kubeconfigPath)
+	if err != nil {
+		return nil, fmt.Errorf("could not load kubeconfig: %w", err)
+	}
+
+	return cfg, nil
 }
 
 // initConfig reads in config file and ENV variables if set.

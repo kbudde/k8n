@@ -20,6 +20,7 @@ import (
 	"github.com/kbudde/k8n/internal/ytt"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // runCmd represents the run command.
@@ -42,12 +43,13 @@ var runCmd = &cobra.Command{
 				cobra.CheckErr(err)
 			}
 		}()
-		configFile, err := cmd.Flags().GetString("config")
-		cobra.CheckErr(err)
+		configFile := viper.GetString("config")
+
+		fmt.Printf("configFile: %v\n", configFile)
 		cfg, err := config.FromYamlFile(configFile)
 		cobra.CheckErr(err)
-		folder, err := cmd.Flags().GetString("ytt")
-		cobra.CheckErr(err)
+
+		folder := viper.GetString("ytt")
 		if folder == "" {
 			folder = filepath.Dir(configFile)
 		}
@@ -91,4 +93,7 @@ func init() {
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().String("config", "config.yaml", "path to config file.")
 	runCmd.Flags().String("ytt", "", "path to ytt files. Defaults to the directory of the input file.")
+
+	err := viper.BindPFlags(runCmd.Flags())
+	cobra.CheckErr(err)
 }

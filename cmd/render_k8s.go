@@ -13,6 +13,7 @@ import (
 	"github.com/kbudde/k8n/internal/controller"
 	"github.com/kbudde/k8n/internal/ytt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 )
 
@@ -27,12 +28,12 @@ var k8sCmd = &cobra.Command{
 		var outW io.Writer
 		var file *os.File
 
-		configFile, err := cmd.Flags().GetString("config")
-		cobra.CheckErr(err)
+		configFile := viper.GetString("config")
+
 		cfg, err := config.FromYamlFile(configFile)
 		cobra.CheckErr(err)
-		folder, err := cmd.Flags().GetString("ytt")
-		cobra.CheckErr(err)
+		folder := viper.GetString("ytt")
+
 		if folder == "" {
 			folder = filepath.Dir(configFile)
 		}
@@ -55,8 +56,7 @@ var k8sCmd = &cobra.Command{
 		out, err := ytt.Render(tempFile.Name(), folder)
 		cobra.CheckErr(err)
 
-		outputFile, err := cmd.Flags().GetString("output")
-		cobra.CheckErr(err)
+		outputFile := viper.GetString("output")
 
 		if outputFile == "-" {
 			outW = os.Stdout
@@ -75,4 +75,7 @@ func init() {
 	renderCmd.AddCommand(k8sCmd)
 	k8sCmd.Flags().String("config", "config.yaml", "path to config file.")
 	k8sCmd.Flags().String("ytt", "", "path to ytt files. Defaults to the directory of the config file.")
+
+	err := viper.BindPFlags(k8sCmd.Flags())
+	cobra.CheckErr(err)
 }

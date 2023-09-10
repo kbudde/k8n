@@ -11,6 +11,7 @@ import (
 
 	"github.com/kbudde/k8n/internal/ytt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // localCmd represents the local command
@@ -24,18 +25,16 @@ var localCmd = &cobra.Command{
 		var outW io.Writer
 		var file *os.File
 
-		inputFile, err := cmd.Flags().GetString("input")
-		cobra.CheckErr(err)
-		folder, err := cmd.Flags().GetString("ytt")
-		cobra.CheckErr(err)
+		inputFile := viper.GetString("input")
+		folder := viper.GetString("ytt")
+
 		if folder == "" {
 			folder = filepath.Dir(inputFile)
 		}
-		_, err = os.ReadFile(inputFile)
+		_, err := os.ReadFile(inputFile)
 		cobra.CheckErr(err)
 
-		outputFile, err := cmd.Flags().GetString("output")
-		cobra.CheckErr(err)
+		outputFile := viper.GetString("output")
 
 		if outputFile == "-" {
 			outW = os.Stdout
@@ -60,4 +59,7 @@ func init() {
 	renderCmd.AddCommand(localCmd)
 	localCmd.Flags().String("input", "input.yaml", "path to data file. See `k8n read`")
 	localCmd.Flags().String("ytt", "", "path to ytt files. Defaults to the directory of the input file.")
+
+	err := viper.BindPFlags(localCmd.Flags())
+	cobra.CheckErr(err)
 }
