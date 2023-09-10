@@ -48,12 +48,12 @@ var rootCmd = &cobra.Command{
 	Use:   "k8n",
 	Short: "Manage resources in Kubernetes with the power of k8n (Kuberian)",
 	//nolint:lll
-	Long: `k8n (pronounced "ken") is a command-line tool that simplifies the management of resources in Kubernetes clusters by leveraging the power of a universal operator. 
+	Long: `k8n (pronounced "ken") is a command-line tool that simplifies the management of resources in Kubernetes clusters by leveraging the power of a universal operator.
 	       This operator generates resources based on existing resources in the cluster, and can be configured to watch resources based on API version, kind, and labels/annotations.
 				 On each change, the resources are provided as input to ytt overlays, which transform the resources into Kubernetes manifests. The manifests are then applied to the cluster with kapp.
 
 Examples:
-- For each namespace with labels "team=something" and "feature=alerting", 
+- For each namespace with labels "team=something" and "feature=alerting",
   k8n can generate Alertmanager configuration and apply it.
 - For each deployed RabbitMQ pod, k8n will create a deployment for "kbudde/rabbitmq-exporter" to monitor the pod.
 
@@ -78,7 +78,6 @@ func init() {
 	rootCmd.PersistentFlags().AddGoFlagSet(fs)
 
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is .k8n.yaml)")
 	rootCmd.PersistentFlags().StringVar(
 		&kubeconfigPath,
 		"kubeconfig",
@@ -98,22 +97,10 @@ func kubeConfigFromFlags() (*rest.Config, error) {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".k8n")
-	}
-
 	viper.SetEnvPrefix("K8N")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv() // read in environment variables that match
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
 }
 
 func SetVersion(version, commit, date string) {
