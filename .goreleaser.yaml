@@ -12,7 +12,6 @@ builds:
       - netgo
       - static_build
     targets:
-      - windows_amd64
       - linux_arm64
       - linux_amd64
       - darwin_arm64
@@ -33,9 +32,6 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    format_overrides:
-    - goos: windows
-      format: zip
 
 checksum:
   name_template: 'checksums.txt'
