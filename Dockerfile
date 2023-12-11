@@ -1,4 +1,4 @@
-FROM alpine:latest@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a AS builder
+FROM alpine:latest@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48 AS builder
 WORKDIR /tmp
 RUN apk add curl git tini-static 
 RUN curl https://zyedidia.github.io/eget.sh | sh 
