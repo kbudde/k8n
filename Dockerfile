@@ -13,7 +13,7 @@ FROM builder AS kapp
 ARG KAPP_VERSION=0.59.1
 RUN ./eget carvel-dev/kapp -t v${KAPP_VERSION}
 
-FROM ubuntu
+FROM ubuntu@sha256:8eab65df33a6de2844c9aefd19efe8ddb87b7df5e9185a4ab73af936225685bb
 COPY --from=builder /sbin/tini-static   /bin/tini
 COPY --from=ytt   /tmp/ytt  /bin
 COPY --from=kapp  /tmp/kapp /bin
