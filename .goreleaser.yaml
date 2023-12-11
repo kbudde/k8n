@@ -16,7 +16,6 @@ builds:
       - linux_amd64
       - darwin_arm64
       - darwin_amd64
-      - linux_arm_6
       - linux_arm_7
     ldflags:
       -  -X main.Version={{.Version}}
@@ -83,36 +82,6 @@ dockers:
   - "--platform=linux/amd64"
 -
   goos: linux
-  goarch: arm
-  goarm: "6"
-  image_templates:
-  - "kbudde/{{.ProjectName}}:linux-arm6-{{.Version}}"
-  - "ghcr.io/kbudde/{{.ProjectName}}:linux-arm6-{{.Version}}"
-  use: buildx
-  build_flag_templates:
-  - "--label=org.opencontainers.image.created={{.Date}}"
-  - "--label=org.opencontainers.image.title={{.ProjectName}}"
-  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-  - "--label=org.opencontainers.image.version={{.Version}}"
-  - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
-  - "--platform=linux/arm/v6"
--
-  goos: linux
-  goarch: arm
-  goarm: "7"
-  image_templates:
-  - "kbudde/{{.ProjectName}}:linux-arm7-{{.Version}}"
-  - "ghcr.io/kbudde/{{.ProjectName}}:linux-arm7-{{.Version}}"
-  use: buildx
-  build_flag_templates:
-  - "--label=org.opencontainers.image.created={{.Date}}"
-  - "--label=org.opencontainers.image.title={{.ProjectName}}"
-  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-  - "--label=org.opencontainers.image.version={{.Version}}"
-  - "--label=org.opencontainers.image.source=https://github.com/kbudde/{{.ProjectName}}"
-  - "--platform=linux/arm/v7"
--
-  goos: linux
   goarch: arm64
   image_templates:
   - "kbudde/{{.ProjectName}}:linux-arm64-{{.Version}}"
@@ -131,8 +100,6 @@ docker_manifests:
   name_template: ghcr.io/kbudde/{{.ProjectName}}:latest
   image_templates: &github_images
   - ghcr.io/kbudde/{{.ProjectName}}:linux-amd64-{{.Version}}
-  - ghcr.io/kbudde/{{.ProjectName}}:linux-arm6-{{.Version}}
-  - ghcr.io/kbudde/{{.ProjectName}}:linux-arm7-{{.Version}}
   - ghcr.io/kbudde/{{.ProjectName}}:linux-arm64-{{.Version}}
 -
   name_template: ghcr.io/kbudde/{{.ProjectName}}:{{.Version}}
@@ -144,8 +111,6 @@ docker_manifests:
   name_template: kbudde/{{.ProjectName}}:latest
   image_templates: &docker_images
   - kbudde/{{.ProjectName}}:linux-amd64-{{.Version}}
-  - kbudde/{{.ProjectName}}:linux-arm6-{{.Version}}
-  - kbudde/{{.ProjectName}}:linux-arm7-{{.Version}}
   - kbudde/{{.ProjectName}}:linux-arm64-{{.Version}}
 -
   name_template: kbudde/{{.ProjectName}}:{{.Version}}
