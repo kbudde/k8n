@@ -4,7 +4,6 @@ prodSecrets:
   data:
     user: YWRtaW4=
     password: c2VjdXJlSXNSZWNvbW1lbmRlZCE7KQ==
-  immutable: true
   kind: Secret
   metadata:
     creationTimestamp: "2022-12-13T19:12:13Z"

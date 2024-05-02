@@ -17,10 +17,11 @@ func Render(input, folder string) ([]byte, error) {
 		return nil, fmt.Errorf("no ytt files found in %s", folder)
 	}
 
-	args := []string{"--data-values-file", input, "--allow-symlink-destination"}
+	args := []string{"--data-values-file", input}
 	for _, f := range yttFiles {
 		args = append(args, "-f", f)
 	}
+	args = append(args, "--allow-symlink-destination", "/")
 
 	return runYtt(args)
 }

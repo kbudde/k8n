@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8n
+spec:
+  selector:
+    matchLabels:
+      app: k8n
+  template:
+    metadata:
+      labels:
+        app: k8n
+    spec:
+      serviceAccountName: k8n
+      containers:
+      - name: k8n
+        image: ghcr.io/kbudde/k8n:latest
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "128Mi"
+        args:
+          - run
+        env:
+        - name: KAPP_KUBECONFIG_YAML
+          value: |
+            apiVersion: v1
+            kind: Config
+            clusters:
+            - cluster:
+                certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                server: https://kubernetes.default.svc.cluster.local
+              name: default-cluster
+            contexts:
+            - context:
+                cluster: default-cluster
+                namespace: default
+                user: default-user
+              name: default-context
+            current-context: default-context
+            users:
+            - name: default-user
+              user:
+                tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        ports:
+        - containerPort: 59712
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        configMap:
+          name: k8n
