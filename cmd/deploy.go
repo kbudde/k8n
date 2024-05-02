@@ -25,11 +25,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		folder := viper.GetString("folder")
-
-		k8s, err := kubeConfigFromFlags()
-		cobra.CheckErr(err)
-
-		kapp := kapp.New(k8s)
+		kapp := kapp.New()
 		out, err := kapp.Deploy("TODO", folder)
 		fmt.Println(out)
 		cobra.CheckErr(err)

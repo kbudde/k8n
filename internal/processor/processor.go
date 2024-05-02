@@ -27,6 +27,10 @@ var (
 		Name: "k8n_changes_total",
 		Help: "Number of total changes detected and processed",
 	})
+	totalSyncs = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "k8n_syncs_total",
+		Help: "Number of total syncs processed",
+	})
 	failedChanges = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "k8n_failed_changes_total",
 		Help: "Number of failed changes detected and processed",
@@ -39,19 +43,24 @@ var (
 )
 
 type Processor struct {
-	Controller controller.Controller
-	Deployer   kapp.Deployer
-	RenderFunc func(input, folder string) ([]byte, error)
-	Name       string
-	Folder     string
+	Controller    controller.Controller
+	Deployer      kapp.Deployer
+	RenderFunc    func(input, folder string) ([]byte, error)
+	Name          string
+	Folder        string
+	ReconcileTime time.Duration
 }
 
 func (p *Processor) Process(ctx context.Context) error {
+	var data []byte
+	// create a timer to check for changes every 5 seconds
+	// this is a workaround for the controller not being able to detect changes
+	var t = time.NewTicker(p.ReconcileTime)
 	for {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
-		case data := <-p.Controller.GetProcessChan():
+		case data = <-p.Controller.GetProcessChan():
 			totalChanges.Inc()
 
 			err := p.process(data)
@@ -60,11 +69,22 @@ func (p *Processor) Process(ctx context.Context) error {
 
 				return err
 			}
+			t.Reset(p.ReconcileTime)
+		case <-t.C:
+			err := p.process(data)
+			if err != nil {
+				failedChanges.Inc()
+
+				return err
+			}
+			t.Reset(p.ReconcileTime)
 		}
+
 	}
 }
 
 func (p *Processor) process(data []byte) error {
+	totalSyncs.Inc()
 	now := time.Now()
 
 	inputFile, err := p.TempFile(data)
@@ -85,7 +105,7 @@ func (p *Processor) process(data []byte) error {
 	if err != nil {
 		status.WithLabelValues("render").Set(0)
 
-		return fmt.Errorf("error rendering: %w\nout:%s\n", err, rendered)
+		return fmt.Errorf("error rendering: %w\nout:%s", err, rendered)
 	}
 
 	status.WithLabelValues("render").Set(1)

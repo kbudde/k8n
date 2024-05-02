@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"syscall"
+	"time"
 
 	"github.com/kbudde/k8n/internal/config"
 	"github.com/kbudde/k8n/internal/controller"
@@ -31,8 +32,8 @@ var runCmd = &cobra.Command{
 	Short: "Run",
 	Long:  `Run continuously, reading the data from the cluster and rendering the templates and applying them.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		stopS := make(chan os.Signal, 1)
-		signal.Notify(stopS, os.Interrupt, syscall.SIGTERM)
+		osSignal := make(chan os.Signal, 1)
+		signal.Notify(osSignal, os.Interrupt, syscall.SIGTERM)
 		server := &http.Server{
 			Addr: ":59712",
 		}
@@ -64,8 +65,10 @@ var runCmd = &cobra.Command{
 		stop := make(chan struct{})
 		ctx, cancel := context.WithCancel(context.Background())
 		go func() {
-			<-stopS
-			server.Shutdown(nil)
+			<-osSignal
+			timeout, cancelT := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancelT()
+			server.Shutdown(timeout)
 			close(stop)
 			cancel()
 		}()
@@ -73,14 +76,17 @@ var runCmd = &cobra.Command{
 			ctrl.Run(stop)
 		}()
 
-		kapp := kapp.New(restConfig)
+		kapp := kapp.New()
+
+		reconcile := viper.GetDuration("reconcile")
 
 		p := processor.Processor{
-			Controller: *ctrl,
-			Deployer:   kapp,
-			RenderFunc: ytt.Render,
-			Name:       cfg.Metadata.Name,
-			Folder:     folder,
+			Controller:    *ctrl,
+			Deployer:      kapp,
+			RenderFunc:    ytt.Render,
+			Name:          cfg.Metadata.Name,
+			Folder:        folder,
+			ReconcileTime: reconcile,
 		}
 		err = p.Process(ctx)
 		cobra.CheckErr(err)
@@ -93,6 +99,7 @@ func init() {
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().String("config", "config.yaml", "path to config file.")
 	runCmd.Flags().String("ytt", "", "path to ytt files. Defaults to the directory of the input file.")
+	runCmd.Flags().Duration("reconcile", 30*time.Second, "reconcile time between consecutive syncs.")
 
 	err := viper.BindPFlags(runCmd.Flags())
 	cobra.CheckErr(err)

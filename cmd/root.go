@@ -70,6 +70,8 @@ func init() {
 	fs := goflags.NewFlagSet("", goflags.PanicOnError)
 	klog.InitFlags(fs)
 	rootCmd.PersistentFlags().AddGoFlagSet(fs)
+	viper.SetEnvPrefix("k8n")
+	viper.AutomaticEnv()
 
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().String("kubeconfig", os.Getenv("KUBECONFIG"), "defaults to $KUBECONFIG if not in cluster")
