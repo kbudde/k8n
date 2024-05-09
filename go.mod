@@ -6,7 +6,7 @@ toolchain go1.22.2
 
 require (
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 	gopkg.in/yaml.v3 v3.0.1
