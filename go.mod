@@ -2,7 +2,7 @@ module github.com/kbudde/k8n
 
 go 1.22.0
 
-toolchain go1.22.2
+toolchain go1.23.2
 
 require (
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883
