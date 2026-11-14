@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM alpine:latest AS builder
+FROM --platform=$BUILDPLATFORM alpine:latest@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf AS builder
 WORKDIR /tmp
 RUN apk add curl git tini-static
 RUN curl https://zyedidia.github.io/eget.sh | sh
@@ -13,7 +13,7 @@ FROM builder AS kapp
 ARG KAPP_VERSION=0.62.0
 RUN ./eget carvel-dev/kapp -t v${KAPP_VERSION}
 
-FROM --platform=$BUILDPLATFORM ubuntu:latest
+FROM --platform=$BUILDPLATFORM ubuntu:latest@sha256:065aa8626841f16057b78b027b464cd59c4fac36c204c72dcbf48d66f5fa8a96
 COPY --from=builder /sbin/tini-static   /bin/tini
 COPY --from=ytt   /tmp/ytt  /bin
 COPY --from=kapp  /tmp/kapp /bin
